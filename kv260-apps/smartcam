@@ -1,0 +1,25 @@
+FROM som-develop:latest as build
+WORKDIR /workspace
+
+RUN \
+mkdir -p /tmp/xilinx; \
+    cd /tmp/xilinx; \
+    wget https://gitenterprise.xilinx.com/SOM/smartcam/archive/refs/heads/xlnx_rel_v2022.1.zip ; \
+    unzip xlnx_rel_v2022.1.zip; \
+    cd smartcam-xlnx_rel_v2022.1 ;  \
+    sed -i 's#"vvas-library-repo": "/usr/lib/"#"vvas-library-repo": "/usr/lib/aarch64-linux-gnu/"#g' config/*/aiinference.json ; \
+    sed -i 's#faac#opusenc#g' src/main.cpp ; \
+    mkdir -p build;  \
+    cd build; \                           
+    cmake ../  -DCMAKE_INSTALL_PREFIX:PATH=/ ; make; make install  DESTDIR=./install  ; 
+
+FROM som-runtime:latest
+RUN \
+    apt install --yes graphviz ; \
+    pip install pydot ; 
+
+COPY --from=build /workspace/smartcam-xlnx_rel_v2022.1/build/install /
+
+ENV PATH="${PATH}:/opt/xilinx/kv260-smartcam/bin"
+ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/opt/xilinx/kv260-smartcam/lib"
+

@@ -1,0 +1,42 @@
+FROM som-runtime:latest
+
+LABEL Description="Xilinx Docker for SOM devices" Vendor="AMD-Xilinx" Version="1.0"
+ARG BUILD_DATE
+ARG BUILD_VERSION
+LABEL org.label-schema.schema-version="1.0"
+LABEL org.label-schema.build-date=$BUILD_DATE
+LABEL org.label-schema.version=$BUILD_VERSION
+LABEL org.label-schema.description="Developer image for kv260"
+
+# to avoid configuring tzdata for opencv
+ARG DEBIAN_FRONTEND=noninteractive
+
+# Add pgRouting launchpad repository
+RUN \
+apt install --yes \
+    git cmake build-essential \ 
+    libasound-dev \
+    libgstreamer-xilinx1.0-dev \
+    libopencv-dev \
+    libgoogle-glog-dev sudo \
+    libprotobuf-dev bash \
+\
+    libjansson-dev 
+
+RUN apt install --yes \
+    vim 
+
+
+
+RUN add-apt-repository -y ppa:hm-hui/xlnx-gstreamer
+RUN apt update
+RUN apt install --yes \
+libgstrtspserver-1.0-dev \
+\
+    libgstreamer-xilinx1.0-dev 
+ 
+
+RUN add-apt-repository -y -r ppa:hm-hui/xlnx-gstreamer
+
+
+RUN apt install --yes libboost-serialization1.74.0 libboost-serialization1.74-dev libzmq3-dev ; 

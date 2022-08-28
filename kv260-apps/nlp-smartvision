@@ -1,9 +1,9 @@
-FROM som-develop:latest as build
+FROM kria-developer:latest as build
 WORKDIR /workspace
 RUN git clone https://github.com/Xilinx/nlp-smartvision -b xlnx_rel_v2022.1; \
     cd nlp-smartvision;  \
         mkdir -p build/install && cd build && cmake ../ && make && make DESTDIR=./install install
 
-FROM som-runtime:latest
+FROM kria-runtime:latest
 COPY --from=build /workspace/nlp-smartvision/build/install /
 ENV PATH="/opt/xilinx/kv260-nlp-smartvision/bin:$PATH"

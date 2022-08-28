@@ -1,21 +1,20 @@
-FROM som-develop:latest as build
+FROM kria-developer:latest as build
 WORKDIR /workspace
 
 RUN \
-    wget https://gitenterprise.xilinx.com/SOM/aibox-reid/archive/refs/heads/xlnx_rel_v2022.1.zip ; \
-    unzip xlnx_rel_v2022.1.zip; \
-    cd aibox-reid-xlnx_rel_v2022.1 ;  \
+    git clone https://github.com/Xilinx/aibox-reid.git -b xlnx_rel_v2022.1 ; \ 
+    cd aibox-reid ;  \
     sed -i 's#"vvas-library-repo": "/usr/lib/"#"vvas-library-repo": "/usr/lib/aarch64-linux-gnu/"#g' config/refinedet.json ; \
-    mkdir -p build;  \
+    mkdir -p build/install;  \
     cd build; \                           
-    cmake ../  -DCMAKE_INSTALL_PREFIX:PATH=/ ; make; make install  DESTDIR=./install  ; 
+    cmake ../  -DCMAKE_INSTALL_PREFIX:PATH=/ ; make; make DESTDIR=./install install; 
 
-FROM som-runtime:latest
+FROM kria-runtime:latest
 RUN \
     apt install --yes graphviz ; \
     pip install pydot ; 
 
-COPY --from=build /workspace/aibox-reid-xlnx_rel_v2022.1/build/install /
+COPY --from=build /workspace/aibox-reid/build/install /
 
 ENV PATH="${PATH}:/opt/xilinx/kv260-aibox-reid/bin"
 ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/opt/xilinx/kv260-aibox-reid/lib"

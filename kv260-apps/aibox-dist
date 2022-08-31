@@ -1,0 +1,25 @@
+FROM kria-developer:latest as build
+WORKDIR /workspace
+
+RUN \
+    git clone https://github.com/Xilinx/aibox-dist.git -b xlnx_rel_v2022.1 ; \ 
+    cd aibox-dist ;  \
+    sed -i 's#"vvas-library-repo": "/usr/lib/"#"vvas-library-repo": "/usr/lib/aarch64-linux-gnu/"#g' config/refinedet.json ; \
+    mkdir -p build/install ;  \
+    cd build; \
+    cmake ../  -DCMAKE_INSTALL_PREFIX:PATH=/ ; make; make install  DESTDIR=./install; 
+
+FROM kria-runtime:latest
+RUN \
+    apt install --yes graphviz ; \
+    pip install pydot opencv-python ; 
+
+RUN \
+    apt install --yes libboost-serialization1.74.0 libzmq3-dev ; \
+    pip install  --upgrade jupyterlab ipympl ; 
+
+COPY --from=build /workspace/aibox-dist/build/install /
+
+ENV PATH="${PATH}:/opt/xilinx/kv260-aibox-dist/bin"
+ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/opt/xilinx/kv260-aibox-dist/lib"
+

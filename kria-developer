@@ -1,37 +1,41 @@
 FROM kria-runtime:latest
 
-LABEL Description="Xilinx Docker for SOM devices" Vendor="AMD-Xilinx" Version="1.0"
+LABEL Description="Docker developer image for kria" Vendor="AMD-Xilinx" Version="1.0"
 ARG BUILD_DATE
 ARG BUILD_VERSION
 LABEL org.label-schema.schema-version="1.0"
 LABEL org.label-schema.build-date=$BUILD_DATE
 LABEL org.label-schema.version=$BUILD_VERSION
-LABEL org.label-schema.description="Kria Developer Docker"
 
 # to avoid configuring tzdata for opencv
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN add-apt-repository -y ppa:hm-hui/xlnx-gstreamer
-RUN apt update
 
 # Add pgRouting launchpad repository
 RUN \
-apt install --yes \
+apt update && apt install --yes --no-install-recommends \
     git \
-	cmake \
-	build-essential \ 
+    cmake \
+    build-essential \ 
     libasound-dev \
     libgstreamer-xilinx1.0-dev \
     libopencv-dev \
-    libgoogle-glog-dev sudo \
+    libgoogle-glog-dev \
+    sudo \
     libprotobuf-dev \
-	bash \
+    bash \
     libjansson-dev \
     vim \
-	libgstrtspserver-1.0-dev \
+    libgstrtspserver-1.0-dev \
     libgstreamer-xilinx1.0-dev \
-	libboost-serialization1.74.0 \
-	libboost-serialization1.74-dev \
-	libzmq3-dev
- 
+    libboost-serialization1.74.0 \
+    libboost-serialization1.74-dev \
+    libzmq3-dev \
+    libgstreamer-xilinx-plugins-good1.0-dev \
+    libgstreamer-xilinx-plugins-base1.0-dev \
+    libgstreamer-xilinx-plugins-bad1.0-dev \
+    libopencv-dev \
+    xmutil \
+    libxilinx-vcu-omx-dev ;  
 RUN add-apt-repository -y -r ppa:hm-hui/xlnx-gstreamer

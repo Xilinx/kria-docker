@@ -1,12 +1,14 @@
 FROM ubuntu:jammy
 
-LABEL Description="Xilinx Docker for SOM devices RunTime Docker" Vendor="AMD-Xilinx" Version="1.0"
+LABEL Description="Docker run time image for kria boards" Vendor="AMD-Xilinx"
 ARG BUILD_DATE
 ARG BUILD_VERSION
 LABEL org.label-schema.schema-version="1.0"
+
+# BUILD_DATE should be in "2016-04-12T23:20:50.52Z" format
 LABEL org.label-schema.build-date=$BUILD_DATE
+#BUILD_VERSION should match with source code tag.
 LABEL org.label-schema.version=$BUILD_VERSION
-LABEL org.label-schema.description="Kria Runtime Docker"
 
 # to avoid configuring tzdata for opencv
 ARG DEBIAN_FRONTEND=noninteractive
@@ -17,63 +19,61 @@ RUN apt-get update ; \
     add-apt-repository -y ppa:ubuntu-xilinx/updates ; \
     touch /etc/apt/apt.conf.d/99verify-peer.conf && echo >>/etc/apt/apt.conf.d/99verify-peer.conf "Acquire { https::Verify-Peer false }"  ; \
     add-apt-repository -y ppa:xilinx-apps/ppa ; \
-    add-apt-repository -y ppa:hm-hui/xlnx-gstreamer ; \
     printf "deb https://msreeram:qdrGpGkr39JlnvNcdJgR@private-ppa.launchpadcontent.net/limerick-team/limerick-proposed/ubuntu jammy main \n" > /etc/apt/sources.list.d/xlnx_proposed.list ;\
     echo "deb-src https://msreeram:qdrGpGkr39JlnvNcdJgR@private-ppa.launchpadcontent.net/limerick-team/limerick-proposed/ubuntu jammy main" >> /etc/apt/sources.list.d/xlnx_proposed.list;\
     apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 7BBD4B7288690887C53E2372F6565ECB47853AFB ; \
     apt-get update ; \
-    apt-get install --yes \
+    apt-get install --yes --no-install-recommends \
     vitis-ai-library \
-	vitis-ai-runtime \
-	vvas-essentials \
+    vitis-ai-runtime \
     v4l-utils-xlnx \
     alsa-base \
     alsa-utils \
     pavucontrol \
     gstreamer-xilinx1.0-tools \
     gstreamer-xilinx1.0-plugins-base \
-	gstreamer-xilinx1.0-plugins-base-apps \
     gstreamer-xilinx1.0-plugins-good \
     gstreamer-xilinx1.0-x \
     gstreamer-xilinx1.0-plugins-bad \
-	gstreamer-xilinx1.0-pulseaudio \
-	gstreamer-xilinx1.0-alsa \
-	gstreamer-xilinx1.0-opencv \
-    wget \
-    unzip \
+    wget  vvas-essentials \
+    unzip   \
     python3-pip \
+    python3-dev \
     gstreamer1.0-omx-generic \
     libxilinx-vcu-omx1 xilinx-vcu-omx-utils \
     libxilinx-vcu-omx-dev \
+    gstreamer-xilinx1.0-omx-zynqmp \
     libjansson4 \
-	libjansson-dev \
-	gst-xilinx-perf \
-    net-tools \
-	gawk \
+    net-tools gawk \
+    gstreamer-xilinx1.0-alsa \
     libdrm2-xlnx \
     libdrm-xlnx-common \
     libdrm-xlnx-tests \
     libdrm-xlnx-etnaviv1 \
     libgstreamer-xilinx1.0-0 \
-	libgstreamer-xilinx-gl1.0-0 \
     libgstreamer-xilinx-plugins-base1.0-0 \
     libgstreamer-xilinx-plugins-good1.0-0 \
     libgstreamer-xilinx-plugins-bad1.0-0 \
-	libgstreamer-xilinx-opencv1.0-0 \
-	libgstreamer-xilinx1.0-dev \
-	libgstreamer-xilinx-plugins-good1.0-dev \
-	libgstreamer-xilinx-plugins-base1.0-dev \
-    libgstreamer-xilinx-plugins-bad1.0-dev \
-	libopencv-dev \
-	libgoogle-glog-dev \
-	libprotobuf-dev \
-	xmutil \
-	libv4l2rds0-xlnx \
-	libv4l-0-xlnx \
-	libv4lconvert0-xlnx \
-    libgstreamer-xilinx-plugins-base1.0-dev \
-	gstreamer1.0-rtsp \
-	libgstrtspserver-1.0-0 \
-	gir1.2-gst-rtsp-server-1.0
-RUN pip3 install jupyterlab	
-RUN add-apt-repository -y -r ppa:hm-hui/xlnx-gstreamer
+    gstreamer-xilinx1.0-plugins-base-apps \
+    gstreamer-xilinx1.0-pulseaudio \
+    gstreamer-xilinx1.0-opencv \
+    libv4l2rds0-xlnx \
+    libv4l-0-xlnx \
+    libv4lconvert0-xlnx \
+    libgstreamer-xilinx-gl1.0-0 \
+    libgstreamer-xilinx-opencv1.0-0 \
+    gcc ;
+## rtsp gir package need this dev package
+RUN \
+apt install --yes --no-install-recommends \
+    libgstreamer-xilinx-plugins-base1.0-dev ;
+
+RUN \
+add-apt-repository -y ppa:hm-hui/xlnx-gstreamer && apt update && apt install --yes --no-install-recommends \
+    gstreamer1.0-rtsp libgstrtspserver-1.0-0 \
+    gir1.2-gst-rtsp-server-1.0 \
+    gst-xilinx-perf \
+    vvas-essentials ;
+
+RUN pip3 install jupyterlab;
+RUN add-apt-repository -y -r ppa:hm-hui/xlnx-gstreamer;

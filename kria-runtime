@@ -29,7 +29,7 @@ RUN apt-get update ; \
     v4l-utils-xlnx \
     alsa-base \
     alsa-utils \
-    pavucontrol \
+    pulseaudio \
     gstreamer-xilinx1.0-tools \
     gstreamer-xilinx1.0-plugins-base \
     gstreamer-xilinx1.0-plugins-good \

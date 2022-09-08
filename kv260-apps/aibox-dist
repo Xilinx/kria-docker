@@ -12,11 +12,15 @@ RUN \
 FROM kria-runtime:latest
 RUN \
     apt install --yes graphviz ; \
-    pip install pydot opencv-python ; 
+    pip install pydot ; 
 
 RUN \
     apt install --yes libboost-serialization1.74.0 libzmq3-dev ; \
     pip install  --upgrade jupyterlab ipympl ; 
+
+ARG DEBIAN_FRONTEND=noninteractive
+RUN \
+    apt install --yes --no-install-recommends python3-opencv python3-gi ; 
 
 COPY --from=build /workspace/aibox-dist/build/install /
 

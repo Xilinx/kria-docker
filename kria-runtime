@@ -19,61 +19,63 @@ RUN apt-get update ; \
     add-apt-repository -y ppa:ubuntu-xilinx/updates ; \
     touch /etc/apt/apt.conf.d/99verify-peer.conf && echo >>/etc/apt/apt.conf.d/99verify-peer.conf "Acquire { https::Verify-Peer false }"  ; \
     add-apt-repository -y ppa:xilinx-apps/ppa ; \
-    printf "deb https://msreeram:qdrGpGkr39JlnvNcdJgR@private-ppa.launchpadcontent.net/limerick-team/limerick-proposed/ubuntu jammy main \n" > /etc/apt/sources.list.d/xlnx_proposed.list ;\
-    echo "deb-src https://msreeram:qdrGpGkr39JlnvNcdJgR@private-ppa.launchpadcontent.net/limerick-team/limerick-proposed/ubuntu jammy main" >> /etc/apt/sources.list.d/xlnx_proposed.list;\
-    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 7BBD4B7288690887C53E2372F6565ECB47853AFB ; \
-    apt-get update ; \
-    apt-get install --yes --no-install-recommends \
+    add-apt-repository -y ppa:ubuntu-xilinx/sdk ; \
+    add-apt-repository -y ppa:ubuntu-xilinx/gstreamer ; \
+    apt-get update ; 
+
+RUN apt-get install --yes --no-install-recommends \
     vitis-ai-library \
     vitis-ai-runtime \
-    v4l-utils-xlnx \
+    v4l-utils \
     alsa-base \
     alsa-utils \
     pulseaudio \
-    gstreamer-xilinx1.0-tools \
-    gstreamer-xilinx1.0-plugins-base \
-    gstreamer-xilinx1.0-plugins-good \
-    gstreamer-xilinx1.0-x \
-    gstreamer-xilinx1.0-plugins-bad \
+    gstreamer1.0-tools \
+    gstreamer1.0-plugins-base \
+    gstreamer1.0-plugins-good \
+    gstreamer1.0-x \
+    gstreamer1.0-plugins-bad \
     wget  vvas-essentials \
     unzip   \
     python3-pip \
     python3-dev \
     gstreamer1.0-omx-generic \
     libxilinx-vcu-omx1 xilinx-vcu-omx-utils \
-    libxilinx-vcu-omx-dev \
+    libxilinx-vcu-omx-dev ;
+
+
+RUN apt-get install --yes --no-install-recommends \
     gstreamer-xilinx1.0-omx-zynqmp \
     libjansson4 \
     net-tools gawk \
-    gstreamer-xilinx1.0-alsa \
-    libdrm2-xlnx \
-    libdrm-xlnx-common \
-    libdrm-xlnx-tests \
-    libdrm-xlnx-etnaviv1 \
-    libgstreamer-xilinx1.0-0 \
-    libgstreamer-xilinx-plugins-base1.0-0 \
-    libgstreamer-xilinx-plugins-good1.0-0 \
-    libgstreamer-xilinx-plugins-bad1.0-0 \
-    gstreamer-xilinx1.0-plugins-base-apps \
-    gstreamer-xilinx1.0-pulseaudio \
-    gstreamer-xilinx1.0-opencv \
-    libv4l2rds0-xlnx \
-    libv4l-0-xlnx \
-    libv4lconvert0-xlnx \
-    libgstreamer-xilinx-gl1.0-0 \
-    libgstreamer-xilinx-opencv1.0-0 \
+    gstreamer1.0-alsa \
+    libdrm2 \
+    libdrm-common \
+    libdrm-tests \
+    libdrm-etnaviv1 \
+    libgstreamer1.0-0 \
+    libgstreamer-plugins-base1.0-0 \
+    libgstreamer-plugins-good1.0-0 \
+    libgstreamer-plugins-bad1.0-0 \
+    gstreamer1.0-plugins-base-apps \
+    gstreamer1.0-pulseaudio \
+    gstreamer1.0-opencv \
+    libv4l2rds0 \
+    libv4l-0 \
+    libv4lconvert0 \
+    libgstreamer-gl1.0-0 \
+    libgstreamer-opencv1.0-0 \
     gcc ;
 ## rtsp gir package need this dev package
 RUN \
 apt install --yes --no-install-recommends \
-    libgstreamer-xilinx-plugins-base1.0-dev ;
+    libgstreamer-plugins-base1.0-dev ;
 
 RUN \
-add-apt-repository -y ppa:hm-hui/xlnx-gstreamer && apt update && apt install --yes --no-install-recommends \
+apt install --yes --no-install-recommends \
     gstreamer1.0-rtsp libgstrtspserver-1.0-0 \
     gir1.2-gst-rtsp-server-1.0 \
-    gst-xilinx-perf \
+    gst-perf \
     vvas-essentials ;
 
 RUN pip3 install jupyterlab;
-RUN add-apt-repository -y -r ppa:hm-hui/xlnx-gstreamer;

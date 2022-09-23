@@ -10,6 +10,11 @@ LABEL org.label-schema.build-date=$BUILD_DATE
 #BUILD_VERSION should match with source code tag.
 LABEL org.label-schema.version=$BUILD_VERSION
 
+COPY bashrc /etc/bash.bashrc
+RUN chmod a+rwx /etc/bash.bashrc
+RUN echo $BUILD_DATE > /etc/BUILD_DATE.txt
+ADD welcome.sh /etc/
+
 # to avoid configuring tzdata for opencv
 ARG DEBIAN_FRONTEND=noninteractive
 

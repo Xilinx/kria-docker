@@ -1,0 +1,2 @@
+export BUILD_DATE=`cat /etc/BUILD_DATE.txt`
+source /etc/welcome.sh

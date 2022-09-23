@@ -1,0 +1,9 @@
+docker build --build-arg BUILD_DATE="$(date -u +'%Y/%m/%d %H:%M')" -f kria-runtime . -t kria-runtime
+docker build --build-arg BUILD_DATE="$(date -u +'%Y/%m/%d %H:%M')" -f kria-developer . -t kria-developer
+
+docker build -f aibox-reid . -t aibox-reid
+docker build -f aibox-dist . -t aibox-dist
+docker build -f smartcam . -t smartcam
+docker build -f defect-detect . -t defect-detect
+docker build -f nlp-smartvision . -t nlp-smartvision
+

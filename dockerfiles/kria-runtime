@@ -21,7 +21,6 @@ ARG DEBIAN_FRONTEND=noninteractive
 # Add pgRouting launchpad repository
 RUN apt-get update ; \
     apt-get install -y software-properties-common ; \
-    add-apt-repository -y ppa:ubuntu-xilinx/updates ; \
     add-apt-repository -y ppa:xilinx-apps/ppa ; \
     add-apt-repository -y ppa:ubuntu-xilinx/sdk ; \
     add-apt-repository -y ppa:ubuntu-xilinx/gstreamer ; \

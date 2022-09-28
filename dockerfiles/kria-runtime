@@ -1,4 +1,4 @@
-FROM ubuntu:jammy
+FROM ubuntu:22.04
 
 LABEL Description="Docker run time image for kria boards" Vendor="AMD-Xilinx"
 ARG BUILD_DATE
@@ -83,3 +83,6 @@ apt install --yes --no-install-recommends \
     vvas-essentials ;
 
 RUN pip3 install jupyterlab;
+
+RUN wget https://raw.githubusercontent.com/Xilinx/meta-petalinux/rel-v2022.1/recipes-utils/start-jupyterlab/start-jupyterlab/overrides.json --no-check-certificate && mkdir -p /usr/local/share/jupyter/lab/settings/;cp overrides.json /usr/local/share/jupyter/lab/settings/overrides.json
+

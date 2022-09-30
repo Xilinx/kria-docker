@@ -1,3 +1,6 @@
+# Copyright (C) 2022, Advanced Micro Devices, Inc. All rights reserved.
+# SPDX-License-Identifier: MIT
+
 docker build --build-arg BUILD_DATE="$(date -u +'%Y/%m/%d %H:%M')" -f kria-runtime . -t kria-runtime
 docker build --build-arg BUILD_DATE="$(date -u +'%Y/%m/%d %H:%M')" -f kria-developer . -t kria-developer
 

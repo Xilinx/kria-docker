@@ -1,3 +1,7 @@
+# Copyright (C) 2022, Advanced Micro Devices, Inc. All rights reserved.
+# SPDX-License-Identifier: MIT
+
+
 docker run \
     --env="DISPLAY" \
     --net=host \
@@ -10,3 +14,4 @@ docker run \
     -v /run:/run \
     -v /lib/firmware:/lib/firmware \
     -it ${1:-"smartcam"} bash
+

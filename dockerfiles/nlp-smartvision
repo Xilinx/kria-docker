@@ -1,12 +1,12 @@
 # Copyright (C) 2022, Advanced Micro Devices, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 
-FROM kria-developer:latest as build
+FROM xilinx/kria-developer:2022.1 as build
 WORKDIR /workspace
 RUN git clone https://github.com/Xilinx/nlp-smartvision -b xlnx_rel_v2022.1; \
     cd nlp-smartvision;  \
         mkdir -p build/install && cd build && cmake ../ && make && make DESTDIR=./install install
 
-FROM kria-runtime:latest
+FROM xilinx/kria-runtime:2022.1
 COPY --from=build /workspace/nlp-smartvision/build/install /
 ENV PATH="/opt/xilinx/kv260-nlp-smartvision/bin:$PATH"

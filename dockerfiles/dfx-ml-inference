@@ -1,10 +1,11 @@
+# Copyright (C) 2022, Advanced Micro Devices, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 
 FROM kria-developer:latest as build
 WORKDIR /workspace
 
 RUN \
-    git clone https://gitenterprise.xilinx.com/SOM/kria-dfx-apps.git-b xlnx_rel_v2022.1; \
+    git clone https://gitenterprise.xilinx.com/SOM/kria-dfx-apps.git -b xlnx_rel_v2022.1; \
     cd kria-dfx-apps ;\
     sed -i 's#"vvas-library-repo": "/usr/lib/"#"vvas-library-repo": "/usr/lib/aarch64-linux-gnu/"#g' config/*/aiinference.json ; \
 

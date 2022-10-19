@@ -1,7 +1,7 @@
 # Copyright (C) 2022, Advanced Micro Devices, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 
-FROM kria-developer:latest as build
+FROM xilinx/kria-developer:latest as build
 WORKDIR /workspace
 
 RUN \

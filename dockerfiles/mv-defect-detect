@@ -1,0 +1,69 @@
+# Copyright (C) 2022, Advanced Micro Devices, Inc. All rights reserved.
+# SPDX-License-Identifier: MIT
+
+FROM kria-developer:latest as build
+WORKDIR /workspace
+RUN \
+    git clone https://github.com/Xilinx/mv-defect-detect.git -b xlnx_rel_v2022.1; \
+    cd mv-defect-detect/defect-detect;  \
+    mkdir -p build/install && cd build && cmake ../ -DCMAKE_INSTALL_PREFIX:PATH=/ && make && make DESTDIR=./install install; \
+    cd mv-defect-detect/10gige/application/Arm64;  \
+    mkdir -p build/install && make && make DESTDIR=./build/install install;
+
+FROM kria-runtime:latest
+RUN \
+    apt install --yes busybox ;
+
+RUN \
+    apt install --yes \
+    xmutil \
+    gstreamer-xilinx1.0-omx-zynqmp \
+    libdrm2-xlnx \
+    libdrm-xlnx-common \
+    libdrm-xlnx-tests \
+    libdrm-xlnx-etnaviv1 \
+    libv4l2rds0-xlnx \
+    libv4l-0-xlnx \
+    libv4lconvert0-xlnx \
+    v4l-utils-xlnx \
+    gstreamer-xilinx1.0-tools \
+    gstreamer-xilinx1.0-plugins-base \
+    gstreamer-xilinx1.0-plugins-base-apps \
+    gstreamer-xilinx1.0-plugins-good \
+    gstreamer-xilinx1.0-pulseaudio \
+    gstreamer-xilinx1.0-x \
+    gstreamer-xilinx1.0-plugins-bad \
+    gstreamer-xilinx1.0-opencv 
+
+RUN \
+    apt install --yes \
+    wget  \
+    unzip   \
+    git cmake build-essential \ 
+    libgstreamer-xilinx1.0-0 \
+    libgstreamer-xilinx-gl1.0-0 \
+    libgstreamer-xilinx-plugins-base1.0-0 \
+    libgstreamer-xilinx-plugins-good1.0-0 \
+    libgstreamer-xilinx-opencv1.0-0 \
+    libgstreamer-xilinx-plugins-bad1.0-0 \
+    libgstreamer-xilinx1.0-dev \
+    libgstreamer-xilinx-plugins-good1.0-dev \
+    libgstreamer-xilinx-plugins-base1.0-dev \
+    libgstreamer-xilinx-plugins-bad1.0-dev \
+    libopencv-dev \
+    libgoogle-glog-dev \
+    libprotobuf-dev \
+    vvas-essentials \
+    vim \
+    gst-xilinx-perf \
+    vvas-essentials \
+    libjansson4 \
+    libjansson-dev \
+    jupyter-notebook \
+    python3-pip;  \
+
+COPY --from=build /workspace/mv-defect-detect/defect-detect/build/install /
+COPY --from=build /workspace/mv-defect-detect/10gige/application/Arm64/build/install /
+ENV PATH="/opt/xilinx/xlnx-app-kr260-mv-defect-detect/bin:$PATH"
+ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/opt/xilinx/xlnx-app-kr260-mv-defect-detect/lib"
+

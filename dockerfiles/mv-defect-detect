@@ -1,0 +1,23 @@
+# Copyright (C) 2022, Advanced Micro Devices, Inc. All rights reserved.
+# SPDX-License-Identifier: MIT
+
+FROM xilinx/kria-developer:2022.1 as build
+WORKDIR /workspace
+RUN \
+    git clone https://github.com/Xilinx/mv-defect-detect.git -b xlnx_rel_v2022.1; \
+    cd mv-defect-detect/defect-detect;  \
+    mkdir -p build/install && cd build && cmake ../ -DCMAKE_INSTALL_PREFIX:PATH=/ && make && make DESTDIR=./install install;
+RUN \
+    cd mv-defect-detect/10gige/application/Arm64;  \
+    mkdir -p build/install && make && make DESTDIR=./build/install install;
+
+FROM xilinx/kria-runtime:2022.1
+
+RUN \
+    apt install --yes busybox;
+
+COPY --from=build /workspace/mv-defect-detect/defect-detect/build/install /
+COPY --from=build /workspace/mv-defect-detect/10gige/application/Arm64/build/install /
+ENV PATH="/opt/xilinx/xlnx-app-kr260-mv-defect-detect/bin:$PATH"
+ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/opt/xilinx/xlnx-app-kr260-mv-defect-detect/lib"
+

@@ -6,4 +6,10 @@ WORKDIR /workspace
 
 RUN \
     git clone https://gitenterprise.xilinx.com/SOM/kria-dfx-apps.git -b xlnx_rel_v2022.1; \
-    cd kria-dfx-apps ;
+    cd kria-dfx-apps/src/dfx-ml-inference/; \
+    mkdir -p build/install; \
+    cd build; \
+    cmake ../ -DCMAKE_INSTALL_PREFIX:PATH=/ ; make; make DESTDIR=./install install;
+    
+FROM xilinx/kria-runtime:2022.1 
+COPY --from=build /workspace/kria-dfx-apps/src/dfx-ml-inference/build/install /

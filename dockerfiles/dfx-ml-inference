@@ -1,12 +1,15 @@
 # Copyright (C) 2022, Advanced Micro Devices, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 
-FROM kria-developer:latest as build
+FROM xilinx/kria-developer:2022.1 as build
 WORKDIR /workspace
 
 RUN \
-    git clone https://gitenterprise.xilinx.com/SOM/kria-dfx-apps.git -b dfx-ml-inference; \
-    cd kria-dfx-apps ;\
-    sed -i 's#"vvas-library-repo": "/usr/lib/"#"vvas-library-repo": "/usr/lib/aarch64-linux-gnu/"#g' config/*/aiinference.json ; 
-
-ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/opt/xilinx/dfx-ml-inference/lib"
+    git clone https://gitenterprise.xilinx.com/SOM/kria-dfx-apps.git -b xlnx_rel_v2022.1; \
+    cd kria-dfx-apps/src/dfx-ml-inference/; \
+    mkdir -p build/install; \
+    cd build; \
+    cmake ../ -DCMAKE_INSTALL_PREFIX:PATH=/ ; make; make DESTDIR=./install install;
+    
+FROM xilinx/kria-runtime:2022.1 
+COPY --from=build /workspace/kria-dfx-apps/src/dfx-ml-inference/build/install /

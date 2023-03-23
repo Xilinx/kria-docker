@@ -5,7 +5,7 @@ FROM xilinx/kria-developer:2022.1 as build
 WORKDIR /workspace
 
 RUN \
-    git clone https://gitenterprise.xilinx.com/SOM/kria-dfx-apps.git -b xlnx_rel_v2022.1; \
+    git clone https://github.com/Xilinx/kria-dfx-apps.git -b xlnx_rel_v2022.1; \
     cd kria-dfx-apps/src/dfx-ml-inference/; \
     mkdir -p build/install; \
     cd build; \

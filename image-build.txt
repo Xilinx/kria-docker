@@ -9,4 +9,4 @@ docker build -f aibox-dist . -t aibox-dist
 docker build -f smartcam . -t smartcam
 docker build -f defect-detect . -t defect-detect
 docker build -f nlp-smartvision . -t nlp-smartvision
-
+docker build -f dfx-ml-inference . -t dfx-ml-inference

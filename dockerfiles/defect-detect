@@ -1,12 +1,12 @@
 # Copyright (C) 2022, Advanced Micro Devices, Inc. All rights reserved.
 # SPDX-License-Identifier: MIT
 
-FROM kria-developer:latest as build
+FROM xilinx/kria-developer:latest as build
 WORKDIR /workspace
 RUN git clone https://github.com/Xilinx/defect-detect.git -b xlnx_rel_v2022.1; \
     cd defect-detect;  \
         mkdir -p build/install && cd build && cmake ../ -DCMAKE_INSTALL_PREFIX:PATH=/ && make && make DESTDIR=./install install
 
-FROM kria-runtime:latest
+FROM xilinx/kria-runtime:latest
 COPY --from=build /workspace/defect-detect/build/install /
 ENV PATH="/opt/xilinx/kv260-defect-detect/bin:$PATH"

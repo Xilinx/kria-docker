@@ -1,0 +1,37 @@
+# Copyright (C) 2023, Advanced Micro Devices, Inc. All rights reserved.
+# SPDX-License-Identifier: MIT
+
+# developer docker
+FROM xilinx/kria-developer:latest as build
+WORKDIR /workspace
+
+RUN git clone https://gitenterprise.xilinx.com/SOM/kria-bist.git ;
+
+# runtime docker
+FROM xilinx/kria-runtime:latest
+
+RUN mkdir -p /opt/xilinx/kria-bist
+COPY --from=build /workspace/kria-bist /opt/xilinx/kria-bist
+RUN rm -rf /opt/xilinx/kria-bist/.git
+
+# install debian package dependencies
+RUN apt install --yes \
+	python3-pytest \
+	freeipmi-tools \
+	libiio0 \
+	python3-libiio \
+	tpm2-tools \
+	python3-periphery \
+	iperf3 \
+	i2c-tools ;
+
+# install python package dependencies
+RUN pip install \
+	netifaces \
+	ipaddress \
+	pyroute2 \
+	ping3 \
+	iperf3 ;
+
+# run gst-inspect to trigger gst plugin scanner
+RUN gst-inspect-1.0 ;

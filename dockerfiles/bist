@@ -23,7 +23,8 @@ RUN apt install --yes \
 	tpm2-tools \
 	python3-periphery \
 	iperf3 \
-	i2c-tools ;
+	i2c-tools \
+	ethtool ;
 
 # install python package dependencies
 RUN pip install \

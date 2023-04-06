@@ -33,7 +33,8 @@ RUN pip install \
 	ipaddress \
 	pyroute2 \
 	ping3 \
-	iperf3 ;
+	iperf3 \
+	inputimeout ;
 
 # run gst-inspect to trigger gst plugin scanner
 RUN gst-inspect-1.0 ;

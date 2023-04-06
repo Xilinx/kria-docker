@@ -24,7 +24,8 @@ RUN apt install --yes \
 	python3-periphery \
 	iperf3 \
 	i2c-tools \
-	ethtool ;
+	ethtool \
+	mtd-utils ;
 
 # install python package dependencies
 RUN pip install \

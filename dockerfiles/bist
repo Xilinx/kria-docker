@@ -15,7 +15,7 @@ COPY --from=build /workspace/kria-bist /opt/xilinx/kria-bist
 RUN rm -rf /opt/xilinx/kria-bist/.git
 
 # install debian package dependencies
-RUN apt install --yes \
+RUN apt install --yes --no-install-recommends \
 	python3-pytest \
 	freeipmi-tools \
 	libiio0 \

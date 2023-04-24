@@ -34,7 +34,8 @@ RUN pip install \
 	pyroute2 \
 	ping3 \
 	iperf3 \
-	inputimeout ;
+	inputimeout \
+	func-timeout ;
 
 # run gst-inspect to trigger gst plugin scanner
 RUN gst-inspect-1.0 ;

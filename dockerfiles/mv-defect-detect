@@ -4,7 +4,7 @@
 FROM xilinx/kria-developer:latest as build
 WORKDIR /workspace
 RUN \
-    git clone https://github.com/Xilinx/mv-defect-detect.git -b xlnx_rel_v2022.1; \
+    git clone https://github.com/Xilinx/mv-defect-detect.git -b master; \
     cd mv-defect-detect/defect-detect;  \
     mkdir -p build/install && cd build && cmake ../ -DCMAKE_INSTALL_PREFIX:PATH=/ && make && make DESTDIR=./install install;
 RUN \

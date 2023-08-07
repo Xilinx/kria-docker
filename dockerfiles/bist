@@ -31,11 +31,8 @@ RUN apt install --yes --no-install-recommends \
 RUN pip install \
 	netifaces \
 	ipaddress \
-	pyroute2 \
 	ping3 \
-	iperf3 \
-	inputimeout \
-	func-timeout ;
+	inputimeout ;
 
 # run gst-inspect to trigger gst plugin scanner
 RUN gst-inspect-1.0 ;

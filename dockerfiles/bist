@@ -25,7 +25,8 @@ RUN apt install --yes --no-install-recommends \
 	iperf3 \
 	i2c-tools \
 	ethtool \
-	mtd-utils ;
+        mtd-utils \
+        python3-can ;
 
 # install python package dependencies
 RUN pip install \

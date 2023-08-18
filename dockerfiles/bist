@@ -26,7 +26,8 @@ RUN apt install --yes --no-install-recommends \
 	i2c-tools \
 	ethtool \
         mtd-utils \
-        python3-can ;
+        python3-can \
+	python3-pymodbus ;
 
 # install python package dependencies
 RUN pip install \

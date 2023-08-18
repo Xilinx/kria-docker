@@ -7,12 +7,26 @@ WORKDIR /workspace
 
 RUN git clone https://gitenterprise.xilinx.com/SOM/kria-bist.git ;
 
+# install motor control lib and dependencies
+RUN \
+	apt install python3-dev python3-pybind11 libiio-dev ; \
+	git clone https://gitenterprise.xilinx.com/SOM/foc-motor-ctrl.git ; \
+	cd foc-motor-ctrl ; \
+	mkdir -p build ; \
+	cd build ; \
+	cmake -DCMAKE_INSTALL_PREFIX=/workspace/install .. ; \
+	make ; \
+	make install ;
+
 # runtime docker
 FROM xilinx/kria-runtime:latest
 
 RUN mkdir -p /opt/xilinx/kria-bist
 COPY --from=build /workspace/kria-bist /opt/xilinx/kria-bist
 RUN rm -rf /opt/xilinx/kria-bist/.git
+
+RUN mkdir -p /opt/xilinx/xlnx-app-kd240-foc-motor-ctrl
+COPY --from=build /workspace/install /opt/xilinx/xlnx-app-kd240-foc-motor-ctrl
 
 # install debian package dependencies
 RUN apt install --yes --no-install-recommends \
@@ -27,7 +41,9 @@ RUN apt install --yes --no-install-recommends \
 	ethtool \
         mtd-utils \
         python3-can \
-	python3-pymodbus ;
+	python3-pymodbus \
+	libiio-utils \
+	python3-pybind11 ;
 
 # install python package dependencies
 RUN pip install \
@@ -38,3 +54,7 @@ RUN pip install \
 
 # run gst-inspect to trigger gst plugin scanner
 RUN gst-inspect-1.0 ;
+
+# add paths for motor control lib
+ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/opt/xilinx/xlnx-app-kd240-foc-motor-ctrl/lib"
+ENV PYTHONPATH="${PYTHONPATH}:/opt/xilinx/xlnx-app-kd240-foc-motor-ctrl/lib"

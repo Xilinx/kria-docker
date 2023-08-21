@@ -44,7 +44,8 @@ RUN apt install --yes --no-install-recommends \
         python3-can \
 	python3-pymodbus \
 	libiio-utils \
-	python3-pybind11 ;
+	python3-pybind11 \
+	iproute2 ;
 
 # install python package dependencies
 RUN pip install \

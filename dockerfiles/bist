@@ -5,7 +5,7 @@
 FROM xilinx/kria-developer:latest as build
 WORKDIR /workspace
 
-RUN git clone https://gitenterprise.xilinx.com/SOM/kria-bist.git ;
+RUN git clone https://github.com/Xilinx/kria-bist.git ;
 
 # runtime docker
 FROM xilinx/kria-runtime:latest

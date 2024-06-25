@@ -30,7 +30,7 @@ WORKDIR /root
 #
 RUN git clone https://gitenterprise.xilinx.com/SOM/foc-motor-ctrl.git
 WORKDIR /root/foc-motor-ctrl
-RUN git checkout pj/canopen_proto
+RUN git checkout pj/ros2_control
 #
 #RUN git clone https://github.com/Xilinx/foc-motor-ctrl.git
 #END TODO

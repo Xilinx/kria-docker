@@ -39,5 +39,5 @@ RUN mv /root/foc-motor-ctrl/test/ros2_canopen /root/foc-motor-ctrl/test/foc_moto
 RUN cp -rL /root/foc-motor-ctrl/test/foc_motor /root/ros_ws/src/ros2_canopen
 WORKDIR /root/ros_ws
 RUN source /opt/ros/humble/setup.bash && colcon build --executor sequential
-RUN apt-get install -y ros-humble-rviz2
+RUN apt-get install -y ros-humble-rviz2 ros-humble-ros2-control ros-humble-ros2-controllers
 WORKDIR /root

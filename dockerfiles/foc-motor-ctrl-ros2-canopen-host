@@ -25,24 +25,32 @@ WORKDIR /root/ros_ws/src
 
 # Get ros2 canopen humble sources
 # humble-commitid=1dd817c67c6b1b1dee53e4851f1bc3c391d6ff43
-RUN git clone -b humble https://github.com/ros-industrial/ros2_canopen.git
+RUN git clone --depth=1 -b humble https://github.com/ros-industrial/ros2_canopen.git
+
 
 # Copy master code
 WORKDIR /root
 # TODO: Change to github link
 #
-RUN git clone -b pj/ros2_control https://gitenterprise.xilinx.com/SOM/foc-motor-ctrl.git
+RUN git clone --depth=1 https://gitenterprise.xilinx.com/SOM/foc-motor-ctrl.git
 #
 #RUN git clone https://github.com/Xilinx/foc-motor-ctrl.git
 #END TODO
+
+WORKDIR /root/ros_ws
+
+# Build Ros2 Canopen repo
+RUN . /opt/ros/humble/setup.sh \
+    && rosdep update \
+    && rosdep install --from-paths src --ignore-src -r -y \
+    && colcon build --executor sequential
+
+# Copy Master code in the sources
 RUN cp -rL /root/foc-motor-ctrl/test/ros2_canopen /root/ros_ws/src/kria_motor_control \
     && rm -rf /root/foc-motor-ctrl
 
-WORKDIR /root/ros_ws
-RUN . /opt/ros/humble/setup.sh \
-    && rosdep init && rosdep update \
+RUN . install/setup.sh \
     && rosdep install --from-paths src --ignore-src -r -y \
-    && colcon build --executor sequential \
-    && . install/setup.sh
+    && colcon build --packages-select kria_motor_control
 
 WORKDIR /root

@@ -10,34 +10,39 @@ SHELL ["/bin/bash", "-c"]
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Install dependencies
-RUN apt-get update -y
-RUN apt-get install -y vim iproute2 can-utils
+RUN apt update && apt upgrade -y \
+    && apt install -y iproute2 can-utils \
+        python3-rosdep \
+        python3-argcomplete \
+        python3-colcon-common-extensions \
+        build-essential \
+        pkg-config \
+        python3-wheel
 
-# Install ROS2 CANopen
+# Fetch sources
 RUN mkdir -p /root/ros_ws/src
 WORKDIR /root/ros_ws/src
-RUN git clone https://github.com/ros-industrial/ros2_canopen.git
-WORKDIR /root/ros_ws/src/ros2_canopen
-RUN git checkout humble
-RUN git checkout 1dd817c67c6b1b1dee53e4851f1bc3c391d6ff43
-WORKDIR /root/ros_ws
-RUN rosdep update
-RUN rosdep install --from-paths src/ros2_canopen --ignore-src -r -y
+
+# Get ros2 canopen humble sources
+# humble-commitid=1dd817c67c6b1b1dee53e4851f1bc3c391d6ff43
+RUN git clone -b humble https://github.com/ros-industrial/ros2_canopen.git
 
 # Copy master code
 WORKDIR /root
 # TODO: Change to github link
 #
-RUN git clone https://gitenterprise.xilinx.com/SOM/foc-motor-ctrl.git
-WORKDIR /root/foc-motor-ctrl
-RUN git checkout pj/ros2_control
+RUN git clone -b pj/ros2_control https://gitenterprise.xilinx.com/SOM/foc-motor-ctrl.git
 #
 #RUN git clone https://github.com/Xilinx/foc-motor-ctrl.git
 #END TODO
-WORKDIR /root/foc-motor-ctrl
-RUN mv /root/foc-motor-ctrl/test/ros2_canopen /root/foc-motor-ctrl/test/foc_motor
-RUN cp -rL /root/foc-motor-ctrl/test/foc_motor /root/ros_ws/src/ros2_canopen
+RUN cp -rL /root/foc-motor-ctrl/test/ros2_canopen /root/ros_ws/src/kria_motor_control \
+    && rm -rf /root/foc-motor-ctrl
+
 WORKDIR /root/ros_ws
-RUN source /opt/ros/humble/setup.bash && colcon build --executor sequential
-RUN apt-get install -y ros-humble-rviz2 ros-humble-ros2-control ros-humble-ros2-controllers
+RUN . /opt/ros/humble/setup.sh \
+    && rosdep init && rosdep update \
+    && rosdep install --from-paths src --ignore-src -r -y \
+    && colcon build --executor sequential \
+    && . install/setup.sh
+
 WORKDIR /root

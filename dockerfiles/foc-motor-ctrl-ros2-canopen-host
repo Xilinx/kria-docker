@@ -53,4 +53,10 @@ RUN . install/setup.sh \
     && rosdep install --from-paths src --ignore-src -r -y \
     && colcon build --packages-select kria_motor_control
 
+RUN apt update && apt install -y ros-humble-ros2-control ros-humble-ros2-controllers
+
+RUN echo "source /root/ros_ws/install/setup.sh" >> /root/.bashrc
+RUN echo "eval \"\$(register-python-argcomplete3 ros2)\"" >> /root/.bashrc
+RUN echo "eval \"\$(register-python-argcomplete3 colcon)\"" >> /root/.bashrc
+
 WORKDIR /root

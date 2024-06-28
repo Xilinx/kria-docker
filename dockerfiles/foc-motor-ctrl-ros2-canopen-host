@@ -25,17 +25,13 @@ WORKDIR /root/ros_ws/src
 
 # Get ros2 canopen humble sources
 # humble-commitid=1dd817c67c6b1b1dee53e4851f1bc3c391d6ff43
-RUN git clone --depth=1 -b humble https://github.com/ros-industrial/ros2_canopen.git
+RUN git clone -b humble --depth=1 https://github.com/ros-industrial/ros2_canopen.git
 
 
-# Copy master code
+# Fetch the master code
 WORKDIR /root
-# TODO: Change to github link
-#
-RUN git clone --depth=1 https://gitenterprise.xilinx.com/SOM/foc-motor-ctrl.git
-#
-#RUN git clone https://github.com/Xilinx/foc-motor-ctrl.git
-#END TODO
+
+RUN git clone -b v0.4 --depth=1 https://github.com/Xilinx/foc-motor-ctrl.git
 
 WORKDIR /root/ros_ws
 

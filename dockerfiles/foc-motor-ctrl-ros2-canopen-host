@@ -1,0 +1,58 @@
+# Copyright (C) 2024, Advanced Micro Devices, Inc. All rights reserved.
+# SPDX-License-Identifier: MIT
+
+FROM arm64v8/ros:humble
+
+# Change default shell
+SHELL ["/bin/bash", "-c"]
+
+# To avoid configuring tzdata
+ARG DEBIAN_FRONTEND=noninteractive
+
+# Install dependencies
+RUN apt update && apt upgrade -y \
+    && apt install -y iproute2 can-utils \
+        python3-rosdep \
+        python3-argcomplete \
+        python3-colcon-common-extensions \
+        build-essential \
+        pkg-config \
+        python3-wheel
+
+# Fetch sources
+RUN mkdir -p /root/ros_ws/src
+WORKDIR /root/ros_ws/src
+
+# Get ros2 canopen humble sources
+# humble-commitid=1dd817c67c6b1b1dee53e4851f1bc3c391d6ff43
+RUN git clone -b humble --depth=1 https://github.com/ros-industrial/ros2_canopen.git
+
+
+# Fetch the master code
+WORKDIR /root
+
+RUN git clone -b v0.4 --depth=1 https://github.com/Xilinx/foc-motor-ctrl.git
+
+WORKDIR /root/ros_ws
+
+# Build Ros2 Canopen repo
+RUN . /opt/ros/humble/setup.sh \
+    && rosdep update \
+    && rosdep install --from-paths src --ignore-src -r -y \
+    && colcon build --executor sequential
+
+# Copy Master code in the sources
+RUN cp -rL /root/foc-motor-ctrl/test/ros2_canopen /root/ros_ws/src/kria_motor_control \
+    && rm -rf /root/foc-motor-ctrl
+
+RUN . install/setup.sh \
+    && rosdep install --from-paths src --ignore-src -r -y \
+    && colcon build --packages-select kria_motor_control
+
+RUN apt update && apt install -y ros-humble-ros2-control ros-humble-ros2-controllers
+
+RUN echo "source /root/ros_ws/install/setup.sh" >> /root/.bashrc
+RUN echo "eval \"\$(register-python-argcomplete3 ros2)\"" >> /root/.bashrc
+RUN echo "eval \"\$(register-python-argcomplete3 colcon)\"" >> /root/.bashrc
+
+WORKDIR /root
